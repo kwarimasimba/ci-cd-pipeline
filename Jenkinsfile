@@ -63,14 +63,12 @@ pipeline {
         success {
             mail to: "${env.EMAIL_RECIPIENT}",
                  subject: "Jenkins Build Successful",
-                 body: "The build completed successfully.",
-                 attachLog: true
+                 body: "The build completed successfully. Check Jenkins for full logs."
         }
         failure {
             mail to: "${env.EMAIL_RECIPIENT}",
                  subject: "Jenkins Build Failed",
-                 body: "The build failed. Please check the logs.",
-                 attachLog: true
+                 body: "The build failed. Check Jenkins for full logs."
         }
     }
 }
