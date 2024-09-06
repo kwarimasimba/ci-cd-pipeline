@@ -4,85 +4,85 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "Compiling the code using a build automation tool to compile and package the code."
-                echo "Tool: Maven"
+                echo "Initiating the build process: compiling and packaging the code using an automation tool."
+                echo "Build Tool: Maven"
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
-                echo "Running unit tests to verify code functionality and integration tests to ensure all components work together."
-                echo "Tools: JUnit (for unit tests), Selenium (for integration tests)"
+                echo "Executing unit tests to validate individual components and integration tests to verify overall functionality."
+                echo "Test Tools: JUnit for unit tests, Selenium for integration testing"
             }
             post {
                 success {
-                    emailext subject: "Build Successful - Unit and Integration Tests",
-                             body: "The unit and integration tests passed successfully.",
+                    emailext subject: "Success - Unit and Integration Tests",
+                             body: "All unit and integration tests were completed successfully.",
                              to: 'kwarimasimba@gmail.com',
                              attachLog: true
                 }
                 failure {
-                    emailext subject: "Build Failed - Unit and Integration Tests",
-                             body: "The unit and integration tests failed.",
+                    emailext subject: "Failure - Unit and Integration Tests",
+                             body: "Some of the unit or integration tests failed. Please review the logs.",
                              to: 'kwarimasimba@gmail.com',
                              attachLog: true
                 }
             }
         }
 
-        stage('Code Analysis') {
+        stage('Code Quality Analysis') {
             steps {
-                echo "Running static code analysis to ensure code quality and adherence to industry standards."
-                echo "Tool: SonarQube"
+                echo "Performing static code analysis to check for quality and adherence to standards."
+                echo "Analysis Tool: SonarQube"
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo "Performing a security scan to identify potential vulnerabilities in the code and dependencies."
-                echo "Tool: OWASP Dependency-Check"   
+                echo "Running a security scan to identify any potential vulnerabilities in the application."
+                echo "Security Tool: OWASP Dependency-Check"
             }
-                post {
-                    success {
-                        emailext subject: "Build Successful - Security Scan",
-                                 body: "The security scan passed successfully.",
-                                 to: 'kwarimasimba@gmail.com',
-                                 attachLog: true
+            post {
+                success {
+                    emailext subject: "Success - Security Scan",
+                             body: "The security scan completed with no issues found.",
+                             to: 'kwarimasimba@gmail.com',
+                             attachLog: true
                 }
-                    failure {
-                        emailext subject: "Build Failed - Security Scan",
-                                 body: "The security scan failed.",
-                                 to: 'kwarimasimba@gmail.com',
-                                 attachLog: true
+                failure {
+                    emailext subject: "Failure - Security Scan",
+                             body: "The security scan found vulnerabilities. Please review the report for details.",
+                             to: 'kwarimasimba@gmail.com',
+                             attachLog: true
                 }
             }
         }
 
         stage('Deploy to Staging') {
             steps {
-                echo "Deploying the application to a staging server for further testing in a production-like environment."
-                echo "Tool: AWS EC2"
+                echo "Deploying the application to the staging environment for further validation in a near-production setup."
+                echo "Deployment Tool: AWS EC2"
             }
         }
 
-        stage('Integration Tests on Staging') {
+        stage('Integration Tests in Staging') {
             steps {
-                echo "Running integration tests on the staging environment to ensure the application functions as expected."
-                echo "Tools: Postman (for API tests), Selenium (for UI tests)"
+                echo "Running comprehensive integration tests in the staging environment to simulate real-world usage."
+                echo "Test Tools: Postman for API testing, Selenium for UI validation"
             }
         }
 
         stage('Deploy to Production') {
             steps {
-                echo "Deploying the application to a production environment, making it available to end users."
-                echo "Tool: AWS EC2"
+                echo "Deploying the finalized application to the production environment, making it live for users."
+                echo "Deployment Tool: AWS EC2"
             }
         }
     }
 
     post {
         always {
-            echo "Pipeline completed."
+            echo "Pipeline execution completed."
         }
     }
 }
