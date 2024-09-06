@@ -5,7 +5,7 @@ pipeline {
         DIRECTORY_PATH = '/path/to/code/directory'
         STAGING_SERVER = 'AWS Staging Server'
         PRODUCTION_SERVER = 'AWS Production Server'
-        EMAIL_RECIPIENT = 'developer@example.com' // Replace with your email
+        EMAIL_RECIPIENT = 'kwarimasimba@gmail.com' 
     }
 
     stages {
