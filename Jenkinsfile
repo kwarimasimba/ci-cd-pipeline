@@ -8,6 +8,11 @@ pipeline {
         LOG_FILE = "pipeline-log-${env.BUILD_ID}.txt"
     }
 
+    triggers {
+        // This schedule will trigger the pipeline every day at midnight (00:00).
+        cron('H 0 * * *')
+    }
+
     stages {
         stage('Build') {
             steps {
