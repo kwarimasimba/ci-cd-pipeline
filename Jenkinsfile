@@ -1,113 +1,88 @@
 pipeline {
     agent any
 
-    environment {
-        STAGING_SERVER = 'staging-server.example.com'
-        PRODUCTION_SERVER = 'production-server.example.com'
-        RECIPIENT_EMAIL = 'kwarimasimba@gmail.com'
-        LOG_FILE = "pipeline-log-${env.BUILD_ID}.txt"
-    }
-
     stages {
         stage('Build') {
             steps {
-                echo 'Building the code...'
-                echo 'Build tool: Maven'
-                // Save logs to a file
-                script {
-                    sh "echo 'Building the code...' >> ${env.LOG_FILE}"
-                    sh "echo 'Build tool: Maven' >> ${env.LOG_FILE}"
-                }
+                echo "Initiating the build process: compiling and packaging the code using an automation tool."
+                echo "Build Tool: Maven"
             }
         }
 
         stage('Unit and Integration Tests') {
             steps {
-                echo 'Running unit and integration tests...'
-                echo 'Test tools: JUnit, Selenium'
-                // Save logs to a file
-                script {
-                    sh "echo 'Running unit and integration tests...' >> ${env.LOG_FILE}"
-                    sh "echo 'Test tools: JUnit, Selenium' >> ${env.LOG_FILE}"
+                echo "Executing unit tests to validate individual components and integration tests to verify overall functionality."
+                echo "Test Tools: JUnit for unit tests, Selenium for integration testing"
+            }
+            post {
+                success {
+                    emailext subject: "Success - Unit and Integration Tests",
+                             body: "All unit and integration tests were completed successfully.",
+                             to: 'kwarimasimba@gmail.com',
+                             attachLog: true
+                }
+                failure {
+                    emailext subject: "Failure - Unit and Integration Tests",
+                             body: "Some of the unit or integration tests failed. Please review the logs.",
+                             to: 'kwarimasimba@gmail.com',
+                             attachLog: true
                 }
             }
         }
 
-        stage('Code Analysis') {
+        stage('Code Quality Analysis') {
             steps {
-                echo 'Analyzing code quality...'
-                echo 'Code analysis tool: SonarQube'
-                // Save logs to a file
-                script {
-                    sh "echo 'Analyzing code quality...' >> ${env.LOG_FILE}"
-                    sh "echo 'Code analysis tool: SonarQube' >> ${env.LOG_FILE}"
-                }
+                echo "Performing static code analysis to check for quality and adherence to standards."
+                echo "Analysis Tool: SonarQube"
             }
         }
 
         stage('Security Scan') {
             steps {
-                echo 'Performing security scan...'
-                echo 'Security scan tool: OWASP Dependency Check'
-                // Save logs to a file
-                script {
-                    sh "echo 'Performing security scan...' >> ${env.LOG_FILE}"
-                    sh "echo 'Security scan tool: OWASP Dependency Check' >> ${env.LOG_FILE}"
+                echo "Running a security scan to identify any potential vulnerabilities in the application."
+                echo "Security Tool: OWASP Dependency-Check"
+            }
+            post {
+                success {
+                    emailext subject: "Success - Security Scan",
+                             body: "The security scan completed with no issues found.",
+                             to: 'kwarimasimba@gmail.com',
+                             attachLog: true
+                }
+                failure {
+                    emailext subject: "Failure - Security Scan",
+                             body: "The security scan found vulnerabilities. Please review the report for details.",
+                             to: 'kwarimasimba@gmail.com',
+                             attachLog: true
                 }
             }
         }
 
         stage('Deploy to Staging') {
             steps {
-                echo 'Deploying to staging environment...'
-                echo "Deploying to ${env.STAGING_SERVER}"
-                // Save logs to a file
-                script {
-                    sh "echo 'Deploying to staging environment...' >> ${env.LOG_FILE}"
-                    sh "echo 'Deploying to ${env.STAGING_SERVER}' >> ${env.LOG_FILE}"
-                }
+                echo "Deploying the application to the staging environment for further validation in a near-production setup."
+                echo "Deployment Tool: AWS EC2"
             }
         }
 
-        stage('Integration Tests on Staging') {
+        stage('Integration Tests in Staging') {
             steps {
-                echo 'Running integration tests on staging...'
-                // Save logs to a file
-                script {
-                    sh "echo 'Running integration tests on staging...' >> ${env.LOG_FILE}"
-                }
+                echo "Running comprehensive integration tests in the staging environment to simulate real-world usage."
+                echo "Test Tools: Postman for API testing, Selenium for UI validation"
             }
         }
 
         stage('Deploy to Production') {
             steps {
-                echo 'Deploying to production environment...'
-                echo "Deploying to ${env.PRODUCTION_SERVER}"
-                // Save logs to a file
-                script {
-                    sh "echo 'Deploying to production environment...' >> ${env.LOG_FILE}"
-                    sh "echo 'Deploying to ${env.PRODUCTION_SERVER}' >> ${env.LOG_FILE}"
-                }
+                echo "Deploying the finalized application to the production environment, making it live for users."
+                echo "Deployment Tool: AWS EC2"
             }
         }
     }
 
     post {
         always {
-            echo 'Pipeline completed with status: ' + currentBuild.currentResult
-
-            // Attach the log file to the email
-            emailext (
-                to: "${env.RECIPIENT_EMAIL}",
-                subject: "Pipeline ${currentBuild.fullDisplayName} - ${currentBuild.currentResult}",
-                body: """The pipeline has completed with status: ${currentBuild.currentResult}.
-                Please find the attached logs for more details.""",
-                attachmentsPattern: "${env.LOG_FILE}",
-                mimeType: 'text/plain'
-            )
-
-            // Clean up the log file after sending the email
-            sh "rm -f ${env.LOG_FILE}"
+            echo "Pipeline execution completed."
         }
     }
 }
