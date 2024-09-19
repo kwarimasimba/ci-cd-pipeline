@@ -4,7 +4,7 @@ pipeline {
     environment {
         STAGING_SERVER = 'staging-server.example.com'
         PRODUCTION_SERVER = 'production-server.example.com'
-        RECIPIENT_EMAIL = 'raaidrushdy@gmail.com'
+        RECIPIENT_EMAIL = 'kwarimasimba@gmail.com'
         LOG_FILE = "pipeline-log-${env.BUILD_ID}.txt"
     }
 
