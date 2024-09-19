@@ -4,7 +4,7 @@ pipeline {
     environment {
         STAGING_SERVER = 'staging-server.example.com'
         PRODUCTION_SERVER = 'production-server.example.com'
-        RECIPIENT_EMAIL = 'kwarimasimba@gmail.com'
+        RECIPIENT_EMAIL = 'raaidrushdy@gmail.com'
         LOG_FILE = "pipeline-log-${env.BUILD_ID}.txt"
     }
 
@@ -15,8 +15,13 @@ pipeline {
                 echo 'Build tool: Maven'
                 // Save logs to a file
                 script {
-                    sh "echo 'Building the code...' >> ${env.LOG_FILE}"
-                    sh "echo 'Build tool: Maven' >> ${env.LOG_FILE}"
+                    if (isUnix()) {
+                        sh "echo 'Building the code...' >> ${env.LOG_FILE}"
+                        sh "echo 'Build tool: Maven' >> ${env.LOG_FILE}"
+                    } else {
+                        bat "echo Building the code... >> ${env.LOG_FILE}"
+                        bat "echo Build tool: Maven >> ${env.LOG_FILE}"
+                    }
                 }
             }
         }
@@ -27,8 +32,13 @@ pipeline {
                 echo 'Test tools: JUnit, Selenium'
                 // Save logs to a file
                 script {
-                    sh "echo 'Running unit and integration tests...' >> ${env.LOG_FILE}"
-                    sh "echo 'Test tools: JUnit, Selenium' >> ${env.LOG_FILE}"
+                    if (isUnix()) {
+                        sh "echo 'Running unit and integration tests...' >> ${env.LOG_FILE}"
+                        sh "echo 'Test tools: JUnit, Selenium' >> ${env.LOG_FILE}"
+                    } else {
+                        bat "echo Running unit and integration tests... >> ${env.LOG_FILE}"
+                        bat "echo Test tools: JUnit, Selenium >> ${env.LOG_FILE}"
+                    }
                 }
             }
         }
@@ -39,8 +49,13 @@ pipeline {
                 echo 'Code analysis tool: SonarQube'
                 // Save logs to a file
                 script {
-                    sh "echo 'Analyzing code quality...' >> ${env.LOG_FILE}"
-                    sh "echo 'Code analysis tool: SonarQube' >> ${env.LOG_FILE}"
+                    if (isUnix()) {
+                        sh "echo 'Analyzing code quality...' >> ${env.LOG_FILE}"
+                        sh "echo 'Code analysis tool: SonarQube' >> ${env.LOG_FILE}"
+                    } else {
+                        bat "echo Analyzing code quality... >> ${env.LOG_FILE}"
+                        bat "echo Code analysis tool: SonarQube >> ${env.LOG_FILE}"
+                    }
                 }
             }
         }
@@ -51,8 +66,13 @@ pipeline {
                 echo 'Security scan tool: OWASP Dependency Check'
                 // Save logs to a file
                 script {
-                    sh "echo 'Performing security scan...' >> ${env.LOG_FILE}"
-                    sh "echo 'Security scan tool: OWASP Dependency Check' >> ${env.LOG_FILE}"
+                    if (isUnix()) {
+                        sh "echo 'Performing security scan...' >> ${env.LOG_FILE}"
+                        sh "echo 'Security scan tool: OWASP Dependency Check' >> ${env.LOG_FILE}"
+                    } else {
+                        bat "echo Performing security scan... >> ${env.LOG_FILE}"
+                        bat "echo Security scan tool: OWASP Dependency Check >> ${env.LOG_FILE}"
+                    }
                 }
             }
         }
@@ -63,8 +83,13 @@ pipeline {
                 echo "Deploying to ${env.STAGING_SERVER}"
                 // Save logs to a file
                 script {
-                    sh "echo 'Deploying to staging environment...' >> ${env.LOG_FILE}"
-                    sh "echo 'Deploying to ${env.STAGING_SERVER}' >> ${env.LOG_FILE}"
+                    if (isUnix()) {
+                        sh "echo 'Deploying to staging environment...' >> ${env.LOG_FILE}"
+                        sh "echo 'Deploying to ${env.STAGING_SERVER}' >> ${env.LOG_FILE}"
+                    } else {
+                        bat "echo Deploying to staging environment... >> ${env.LOG_FILE}"
+                        bat "echo Deploying to ${env.STAGING_SERVER} >> ${env.LOG_FILE}"
+                    }
                 }
             }
         }
@@ -74,7 +99,11 @@ pipeline {
                 echo 'Running integration tests on staging...'
                 // Save logs to a file
                 script {
-                    sh "echo 'Running integration tests on staging...' >> ${env.LOG_FILE}"
+                    if (isUnix()) {
+                        sh "echo 'Running integration tests on staging...' >> ${env.LOG_FILE}"
+                    } else {
+                        bat "echo Running integration tests on staging... >> ${env.LOG_FILE}"
+                    }
                 }
             }
         }
@@ -85,8 +114,13 @@ pipeline {
                 echo "Deploying to ${env.PRODUCTION_SERVER}"
                 // Save logs to a file
                 script {
-                    sh "echo 'Deploying to production environment...' >> ${env.LOG_FILE}"
-                    sh "echo 'Deploying to ${env.PRODUCTION_SERVER}' >> ${env.LOG_FILE}"
+                    if (isUnix()) {
+                        sh "echo 'Deploying to production environment...' >> ${env.LOG_FILE}"
+                        sh "echo 'Deploying to ${env.PRODUCTION_SERVER}' >> ${env.LOG_FILE}"
+                    } else {
+                        bat "echo Deploying to production environment... >> ${env.LOG_FILE}"
+                        bat "echo Deploying to ${env.PRODUCTION_SERVER} >> ${env.LOG_FILE}"
+                    }
                 }
             }
         }
@@ -107,7 +141,13 @@ pipeline {
             )
 
             // Clean up the log file after sending the email
-            sh "rm -f ${env.LOG_FILE}"
+            script {
+                if (isUnix()) {
+                    sh "rm -f ${env.LOG_FILE}"
+                } else {
+                    bat "del ${env.LOG_FILE}"
+                }
+            }
         }
     }
 }
